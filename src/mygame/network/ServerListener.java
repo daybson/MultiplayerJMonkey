@@ -1,6 +1,6 @@
 package mygame.network;
 
-import mygame.messages.HelloMessage;
+import mygame.messages.PlayerDisconnectedMessage;
 import mygame.messages.MoveMessage;
 import mygame.messages.ColorMessage;
 import com.jme3.network.HostedConnection;
@@ -21,12 +21,6 @@ public class ServerListener implements MessageListener<HostedConnection> {
     @Override
     public void messageReceived(HostedConnection source, Message message) {
 
-        //if (message instanceof PlayerConnectedMessage) {
-            //PlayerConnectedMessage pcm = (PlayerConnectedMessage) message;
-            //source.getServer().broadcast(new PlayerConnectedMessage(pcm.getClientID(), pcm.getColor(), pcm.getPos()));
-            //System.out.println("Nova mensagem de instancia de player");
-            
-        //} else 
         if (message instanceof ColorMessage) {
             ColorMessage colorMessage = (ColorMessage) message;
 
@@ -38,6 +32,13 @@ public class ServerListener implements MessageListener<HostedConnection> {
 
             Server s = source.getServer();
             s.broadcast(moveMessage.setReliable(false));
+
+        } else if (message instanceof PlayerDisconnectedMessage) {
+            PlayerDisconnectedMessage pdm = (PlayerDisconnectedMessage) message;
+            
+            Server s = source.getServer();
+            s.broadcast(pdm);
         }
+
     }
 }

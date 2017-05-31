@@ -3,11 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Documents/OneDrive/UTFPR/Multiplayer/ExemploMultiplayer/src/mygame/ClientListener.java</file>
-            <file>file:/D:/Documents/OneDrive/UTFPR/Multiplayer/ExemploMultiplayer/src/mygame/ServerMain.java</file>
-            <file>file:/D:/Documents/OneDrive/UTFPR/Multiplayer/ExemploMultiplayer/src/mygame/ServerListener.java</file>
-            <file>file:/D:/Documents/OneDrive/UTFPR/Multiplayer/ExemploMultiplayer/src/mygame/ClientMain.java</file>
-            <file>file:/D:/Documents/OneDrive/UTFPR/Multiplayer/ExemploMultiplayer/src/mygame/messages/PlayerConnectedMessage.java</file>
+            <file>file:/D:/Repositorio/MultiplayerJMonkey/src/mygame/network/ServerMain.java</file>
+            <file>file:/D:/Repositorio/MultiplayerJMonkey/src/mygame/network/ServerListener.java</file>
+            <file>file:/D:/Repositorio/MultiplayerJMonkey/src/mygame/network/ClientListener.java</file>
+            <file>file:/D:/Repositorio/MultiplayerJMonkey/src/mygame/network/ClientMain.java</file>
         </group>
     </open-files>
 </project-private>

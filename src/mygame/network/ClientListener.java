@@ -1,6 +1,6 @@
 package mygame.network;
 
-import mygame.messages.HelloMessage;
+import mygame.messages.PlayerDisconnectedMessage;
 import mygame.messages.MoveMessage;
 import mygame.messages.ColorMessage;
 import com.jme3.material.Material;
@@ -28,10 +28,10 @@ public class ClientListener implements MessageListener<Client> {
     public void messageReceived(Client source, Message message) {
 
         /*
-        if (message instanceof HelloMessage) {
+        if (message instanceof PlayerDisconnectedMessage) {
         final Client c = source;
         //1 - recebe o ID do servidor
-        HelloMessage helloMessage = (HelloMessage) message;
+        PlayerDisconnectedMessage helloMessage = (PlayerDisconnectedMessage) message;
         app.ClientID = helloMessage.getClientID();
           System.out.println("ID recebido: '" + helloMessage.getClientID());
         } else 
@@ -81,7 +81,19 @@ public class ClientListener implements MessageListener<Client> {
                     return null;
                 }
             });
+
+        } else if (message instanceof PlayerDisconnectedMessage) {
+            final PlayerDisconnectedMessage pdm = (PlayerDisconnectedMessage) message;
+            
+            app.enqueue(new Callable() {
+                @Override
+                public Void call() {
+                    app.getRootNode().detachChildNamed("PLAYER_" + pdm.getClientID());                                        
+                    return null;
+                }
+            });
         }
+
     }
 
     public ClientListener() {

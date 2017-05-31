@@ -1,6 +1,6 @@
 package mygame.network;
 
-import mygame.messages.HelloMessage;
+import mygame.messages.PlayerDisconnectedMessage;
 import mygame.messages.MoveMessage;
 import mygame.messages.ColorMessage;
 import com.jme3.app.SimpleApplication;
@@ -136,7 +136,7 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
         adicionaCenario();
         //adicionaJogador("Blue Cube", new Vector3f(0, 2, -2), ColorRGBA.Blue);
 
-        Serializer.registerClass(HelloMessage.class);
+        Serializer.registerClass(PlayerDisconnectedMessage.class);
         Serializer.registerClass(PlayerConnectedMessage.class);
         Serializer.registerClass(ColorMessage.class);
         Serializer.registerClass(MoveMessage.class);
@@ -152,7 +152,7 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
         myClient.addClientStateListener(this);
         myClient.addMessageListener(new ClientListener(this),
                 PlayerConnectedMessage.class,
-                HelloMessage.class,
+                PlayerDisconnectedMessage.class,
                 ColorMessage.class,
                 MoveMessage.class);
 
@@ -215,10 +215,10 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
     @Override
     public void destroy() {
         try {
+            System.out.println("Chamando @destroy.");
             myClient.close();
         } catch (Exception ex) {
         }
         super.destroy();
     }
-
 }

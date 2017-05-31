@@ -1,6 +1,6 @@
 package mygame.network;
 
-import mygame.messages.HelloMessage;
+import mygame.messages.PlayerDisconnectedMessage;
 import mygame.messages.MoveMessage;
 import mygame.messages.ColorMessage;
 import com.jme3.app.SimpleApplication;
@@ -83,15 +83,20 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
         if (index >= 0) {
             this.clients.remove(index);
             System.out.println("Cliente #" + client.getId() + ":" + client.getAddress() + " desconectado!");
+
+            for (int i = 0; i < clients.size(); i++) {
+                PlayerDisconnectedMessage pdm = new PlayerDisconnectedMessage(client.getId());
+                this.myServer.broadcast(pdm);
+            }
         }
     }
 
     @Override
     public void simpleInitApp() {
-        Serializer.registerClass(HelloMessage.class);
+        Serializer.registerClass(PlayerConnectedMessage.class);
+        Serializer.registerClass(PlayerDisconnectedMessage.class);
         Serializer.registerClass(ColorMessage.class);
         Serializer.registerClass(MoveMessage.class);
-        Serializer.registerClass(PlayerConnectedMessage.class);
 
         try {
             myServer = Network.createServer(Globals.NAME, Globals.VERSION, Globals.DEFAULT_PORT, Globals.DEFAULT_PORT);
@@ -101,7 +106,7 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
 
         this.clients = new ArrayList<>();
         myServer.addConnectionListener(this);
-        myServer.addMessageListener(new ServerListener(), HelloMessage.class, ColorMessage.class, MoveMessage.class);
+        myServer.addMessageListener(new ServerListener(), PlayerDisconnectedMessage.class, ColorMessage.class, MoveMessage.class);
     }
 
     @Override
