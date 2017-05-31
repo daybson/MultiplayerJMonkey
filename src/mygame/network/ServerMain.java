@@ -58,10 +58,13 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
         //2 - adiciona cliente na lista de clientes
         this.clients.add(p);
 
-        //3 - cria a mensagem de broadcast
-        //PlayerConnectedMessage pcm = new PlayerConnectedMessage(p.ClientID, p.Color, p.Pos);
+        //3 - cria a mensagem de broadcast que é enviada para todos os clientes
         for (int i = 0; i < clients.size(); i++) {
-            PlayerConnectedMessage current = new PlayerConnectedMessage(clients.get(i).ClientID, clients.get(i).Color, clients.get(i).Pos);
+            PlayerConnectedMessage current
+                    = new PlayerConnectedMessage(
+                            clients.get(i).ClientID,
+                            clients.get(i).Color,
+                            clients.get(i).Pos);
             this.myServer.broadcast(current);
         }
     }

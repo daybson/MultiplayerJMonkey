@@ -167,7 +167,7 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("Cor") && keyPressed) {
-                colorMessage.setClientId(ClientID);
+                colorMessage.setClientId(myClient.getId());
                 colorMessage.setColor(ColorRGBA.randomColor());
                 myClient.send(colorMessage);
             }
