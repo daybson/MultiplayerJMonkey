@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.Random;
 import mygame.Globals;
 import mygame.messages.PlayerConnectedMessage;
+import mygame.messages.RotateMessage;
 
 /**
  *
@@ -43,10 +44,12 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
     Client myClient;
     ColorMessage colorMessage = new ColorMessage();
     MoveMessage movMessage = new MoveMessage();
+    RotateMessage rotateMessage = new RotateMessage();
     Geometry geom;
     Camera myCam;
     Spatial sceneModel;
-    int velocidade = 10;
+    int moveSpeed = 10;
+    int rotateSpeed = 5;
     public int ClientID = -1;
 
     public static void main(String[] args) {
@@ -54,6 +57,12 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
         //padrao do AudioRenderer e ao iniciar aplicacao
         //aparece o seguinte erro: org.lwjgl.openal.OpenALException:Invalid Device
         //A configuração de som abaixo resolveu esse erro
+        Serializer.registerClass(PlayerDisconnectedMessage.class);
+        Serializer.registerClass(PlayerConnectedMessage.class);
+        Serializer.registerClass(ColorMessage.class);
+        Serializer.registerClass(MoveMessage.class);
+        Serializer.registerClass(RotateMessage.class);
+
         AppSettings s = new AppSettings(true);
         s.setAudioRenderer(AppSettings.LWJGL_OPENAL);
         ClientMain app = new ClientMain();
@@ -87,16 +96,21 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
     }
 
     private void configuraTeclado() {
+
         //mapeia as teclas com alguma acao
         inputManager.addMapping("Cor", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
         inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
         inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
+        inputManager.addMapping("Rotate", new KeyTrigger(KeyInput.KEY_R));
+
         //ActionListener verifica se uma tecla foi pressionada ou se foi solta        
         inputManager.addListener(actionListener, "Cor");
+
         //AnalogListener verifica quanto tempo a tecla esta sendo pressinada
-        inputManager.addListener(analogListener, "Left", "Right", "Up", "Down");
+        inputManager.addListener(analogListener, "Left", "Right", "Up", "Down", "Rotate");
+
         //exibe o ponteiro do mouse na tela
         inputManager.setCursorVisible(true);
     }
@@ -134,12 +148,6 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
 
         configuraTeclado();
         adicionaCenario();
-        //adicionaJogador("Blue Cube", new Vector3f(0, 2, -2), ColorRGBA.Blue);
-
-        Serializer.registerClass(PlayerDisconnectedMessage.class);
-        Serializer.registerClass(PlayerConnectedMessage.class);
-        Serializer.registerClass(ColorMessage.class);
-        Serializer.registerClass(MoveMessage.class);
 
         //conexao com o servidor
         try {
@@ -154,7 +162,8 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
                 PlayerConnectedMessage.class,
                 PlayerDisconnectedMessage.class,
                 ColorMessage.class,
-                MoveMessage.class);
+                MoveMessage.class,
+                RotateMessage.class);
 
         Random r = new Random();
         PlayerConnectedMessage pcm = new PlayerConnectedMessage(this.ClientID,
@@ -177,24 +186,32 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
     private final AnalogListener analogListener = new AnalogListener() {
         @Override
         public void onAnalog(String name, float value, float tpf) {
-            movMessage.setClientId(myClient.getId());
 
             switch (name) {
                 case "Right":
-                    movMessage.setPositon(value * velocidade, 0, 0);
+                    movMessage.setClientId(myClient.getId());
+                    movMessage.setPositon(value * moveSpeed, 0, 0);
                     myClient.send(movMessage.setReliable(false));
                     break;
                 case "Left":
-                    movMessage.setPositon(-value * velocidade, 0, 0);
+                    movMessage.setClientId(myClient.getId());
+                    movMessage.setPositon(-value * moveSpeed, 0, 0);
                     myClient.send(movMessage.setReliable(false));
                     break;
                 case "Up":
-                    movMessage.setPositon(0, 0, -value * velocidade);
+                    movMessage.setClientId(myClient.getId());
+                    movMessage.setPositon(0, 0, -value * moveSpeed);
                     myClient.send(movMessage.setReliable(false));
                     break;
                 case "Down":
-                    movMessage.setPositon(0, 0, value * velocidade);
+                    movMessage.setClientId(myClient.getId());
+                    movMessage.setPositon(0, 0, value * moveSpeed);
                     myClient.send(movMessage.setReliable(false));
+                    break;
+                case "Rotate":
+                    rotateMessage.setClientId(myClient.getId());
+                    rotateMessage.setAngle(value * rotateSpeed);
+                    myClient.send(rotateMessage.setReliable(true));
                     break;
                 default:
                     break;

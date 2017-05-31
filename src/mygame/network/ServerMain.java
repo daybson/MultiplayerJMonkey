@@ -20,6 +20,7 @@ import java.util.Random;
 import mygame.Globals;
 import mygame.Player;
 import mygame.messages.PlayerConnectedMessage;
+import mygame.messages.RotateMessage;
 
 /**
  *
@@ -97,6 +98,7 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
         Serializer.registerClass(PlayerDisconnectedMessage.class);
         Serializer.registerClass(ColorMessage.class);
         Serializer.registerClass(MoveMessage.class);
+        Serializer.registerClass(RotateMessage.class);
 
         try {
             myServer = Network.createServer(Globals.NAME, Globals.VERSION, Globals.DEFAULT_PORT, Globals.DEFAULT_PORT);
@@ -106,7 +108,11 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
 
         this.clients = new ArrayList<>();
         myServer.addConnectionListener(this);
-        myServer.addMessageListener(new ServerListener(), PlayerDisconnectedMessage.class, ColorMessage.class, MoveMessage.class);
+        myServer.addMessageListener(new ServerListener(),
+                PlayerDisconnectedMessage.class,
+                ColorMessage.class,
+                MoveMessage.class,
+                RotateMessage.class);
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.jme3.network.serializing.Serializable;
  * |--https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_collision.html
  * |--https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_input_system.html
  */
-@Serializable(id = 0)
+@Serializable(id = 1)
 public class ColorMessage extends MyAbstractMessage {
 
     ColorRGBA color = ColorRGBA.White;

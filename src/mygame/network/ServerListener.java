@@ -8,6 +8,7 @@ import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import com.jme3.network.Server;
 import mygame.messages.PlayerConnectedMessage;
+import mygame.messages.RotateMessage;
 
 /**
  *
@@ -33,9 +34,15 @@ public class ServerListener implements MessageListener<HostedConnection> {
             Server s = source.getServer();
             s.broadcast(moveMessage.setReliable(false));
 
+        } else if (message instanceof RotateMessage) {
+            RotateMessage rotateMessage = (RotateMessage) message;
+
+            Server s = source.getServer();
+            s.broadcast(rotateMessage.setReliable(false));
+
         } else if (message instanceof PlayerDisconnectedMessage) {
             PlayerDisconnectedMessage pdm = (PlayerDisconnectedMessage) message;
-            
+
             Server s = source.getServer();
             s.broadcast(pdm);
         }

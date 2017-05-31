@@ -13,7 +13,7 @@ import com.jme3.network.serializing.Serializable;
  *
  * @author DAYBSON
  */
-@Serializable(id = 4)
+@Serializable(id = 3)
 public class PlayerConnectedMessage extends MyAbstractMessage {
 
     ColorRGBA color = ColorRGBA.White;

@@ -5,6 +5,8 @@ import mygame.messages.MoveMessage;
 import mygame.messages.ColorMessage;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
@@ -14,6 +16,7 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import mygame.messages.MyAbstractMessage;
 import mygame.messages.PlayerConnectedMessage;
+import mygame.messages.RotateMessage;
 
 /**
  *
@@ -27,15 +30,6 @@ public class ClientListener implements MessageListener<Client> {
     @Override
     public void messageReceived(Client source, Message message) {
 
-        /*
-        if (message instanceof PlayerDisconnectedMessage) {
-        final Client c = source;
-        //1 - recebe o ID do servidor
-        PlayerDisconnectedMessage helloMessage = (PlayerDisconnectedMessage) message;
-        app.ClientID = helloMessage.getClientID();
-          System.out.println("ID recebido: '" + helloMessage.getClientID());
-        } else 
-         */
         if (message instanceof PlayerConnectedMessage) {
 
             //1 - recebe o sinal para instanciar um novo player
@@ -82,18 +76,41 @@ public class ClientListener implements MessageListener<Client> {
                 }
             });
 
-        } else if (message instanceof PlayerDisconnectedMessage) {
-            final PlayerDisconnectedMessage pdm = (PlayerDisconnectedMessage) message;
-            
+        } else if (message instanceof RotateMessage) {
+            final RotateMessage rotateMessage = (RotateMessage) message;
+            System.out.print("Girando...");
+
             app.enqueue(new Callable() {
                 @Override
                 public Void call() {
-                    app.getRootNode().detachChildNamed("PLAYER_" + pdm.getClientID());                                        
+                    Spatial node = app.getRootNode().getChild("PLAYER_" + rotateMessage.getClientID());
+                    Quaternion currentRotation = node.getLocalRotation();
+                    Vector3f v = new Vector3f(1, 1, 1);
+                    currentRotation.toAngleAxis(v);
+
+                    Vector3f rotation = new Vector3f(
+                            v.x,
+                            v.y + new Quaternion().fromAngles(0, rotateMessage.getAngle(), 0).getY(),
+                            v.z);
+
+                    node.setLocalRotation(
+                            new Quaternion().fromAngles(rotation.getX(), rotation.getY(), rotation.getZ()));
+
+                    return null;
+                }
+            });
+
+        } else if (message instanceof PlayerDisconnectedMessage) {
+            final PlayerDisconnectedMessage pdm = (PlayerDisconnectedMessage) message;
+
+            app.enqueue(new Callable() {
+                @Override
+                public Void call() {
+                    app.getRootNode().detachChildNamed("PLAYER_" + pdm.getClientID());
                     return null;
                 }
             });
         }
-
     }
 
     public ClientListener() {

@@ -12,7 +12,6 @@ import com.jme3.network.serializing.Serializable;
  * |--https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_input_system.html
  */
 @Serializable(id = 2)
-
 public class MoveMessage extends MyAbstractMessage {
 
     private float x, y, z;

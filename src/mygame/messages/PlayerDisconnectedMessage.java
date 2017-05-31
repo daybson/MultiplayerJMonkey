@@ -11,7 +11,7 @@ import com.jme3.network.serializing.Serializable;
  * |--https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_collision.html
  * |--https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_input_system.html
  */
-@Serializable(id = 1)
+@Serializable(id = 4)
 public class PlayerDisconnectedMessage extends MyAbstractMessage {
 
     public PlayerDisconnectedMessage() {

@@ -12,7 +12,7 @@ import com.jme3.network.serializing.Serializable;
  *
  * @author DAYBSON
  */
-@Serializable(id = 3)
+@Serializable(id = 0)
 public class MyAbstractMessage extends AbstractMessage {
 
     protected int clientID;
@@ -24,5 +24,5 @@ public class MyAbstractMessage extends AbstractMessage {
     public void setClientId(int clientID) {
         this.clientID = clientID;
     }
-    
+
 }
