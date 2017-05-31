@@ -19,6 +19,11 @@ public class PlayerConnectedMessage extends MyAbstractMessage {
     ColorRGBA color = ColorRGBA.White;
     Vector3f pos;
 
+    public String getName() {
+        return name;
+    }
+    String name;
+
     public Vector3f getPos() {
         return pos;
     }
@@ -32,6 +37,7 @@ public class PlayerConnectedMessage extends MyAbstractMessage {
 
     public PlayerConnectedMessage(int clientID, ColorRGBA c, Vector3f pos) {
         this.clientID = clientID;
+        this.name = "PLAYER_" + clientID;
         this.color = c;
         this.pos = pos;
     }

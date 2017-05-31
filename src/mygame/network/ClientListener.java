@@ -1,4 +1,4 @@
-package mygame;
+package mygame.network;
 
 import mygame.messages.HelloMessage;
 import mygame.messages.MoveMessage;
@@ -27,32 +27,26 @@ public class ClientListener implements MessageListener<Client> {
     @Override
     public void messageReceived(Client source, Message message) {
 
+        /*
         if (message instanceof HelloMessage) {
-            final Client c = source;
+        final Client c = source;
+        //1 - recebe o ID do servidor
+        HelloMessage helloMessage = (HelloMessage) message;
+        app.ClientID = helloMessage.getClientID();
+          System.out.println("ID recebido: '" + helloMessage.getClientID());
+        } else 
+         */
+        if (message instanceof PlayerConnectedMessage) {
 
-//1 - recebe o ID do servidor
-            HelloMessage helloMessage = (HelloMessage) message;
-            app.ClientID = helloMessage.getClientID();
-            System.out.println("ID recebido: '" + helloMessage.getClientID());
-
-        } else if (message instanceof PlayerConnectedMessage) {
-
-//1 - recebe o sinal para instanciar um novo player
+            //1 - recebe o sinal para instanciar um novo player
             final PlayerConnectedMessage pcm = (PlayerConnectedMessage) message;
-
-            if (app.getRootNode().getChild("PLAYER_" + pcm.getClientID()) != null) {
-                System.out.println("PLAYER_" + pcm.getClientID() + " já existe");
-                return;
-            }
-
             System.out.println("Novo player conectado: '" + pcm.getClientID());
 
-            //3 - instancia um novo personagem (cubo) na tela
+            //2- instancia um novo personagem (cubo) na tela
             app.enqueue(new Callable() {
                 @Override
                 public Void call() {
-                    Random r = new Random();
-                    app.adicionaJogador(String.valueOf(pcm.getClientID()), new Vector3f(r.nextInt(2), r.nextInt(2), -2), pcm.getColor());
+                    app.adicionaJogador(pcm.getName(), pcm.getPos(), pcm.getColor());
                     return null;
                 }
             });
@@ -77,7 +71,7 @@ public class ClientListener implements MessageListener<Client> {
                 System.out.println("PLAYER_" + moveMessage.getClientID() + " já existe");
                 return;
             }
-            
+
             app.enqueue(new Callable() {
                 @Override
                 public Void call() {

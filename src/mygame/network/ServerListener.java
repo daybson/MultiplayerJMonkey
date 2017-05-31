@@ -1,4 +1,4 @@
-package mygame;
+package mygame.network;
 
 import mygame.messages.HelloMessage;
 import mygame.messages.MoveMessage;
@@ -21,11 +21,13 @@ public class ServerListener implements MessageListener<HostedConnection> {
     @Override
     public void messageReceived(HostedConnection source, Message message) {
 
-        if (message instanceof PlayerConnectedMessage) {
-            PlayerConnectedMessage pcm = (PlayerConnectedMessage) message;
-            source.getServer().broadcast(new PlayerConnectedMessage(pcm.getClientID(), pcm.getColor(), pcm.getPos()));
-            System.out.println("Nova mensagem de instancia de player");
-        } else if (message instanceof ColorMessage) {
+        //if (message instanceof PlayerConnectedMessage) {
+            //PlayerConnectedMessage pcm = (PlayerConnectedMessage) message;
+            //source.getServer().broadcast(new PlayerConnectedMessage(pcm.getClientID(), pcm.getColor(), pcm.getPos()));
+            //System.out.println("Nova mensagem de instancia de player");
+            
+        //} else 
+        if (message instanceof ColorMessage) {
             ColorMessage colorMessage = (ColorMessage) message;
 
             Server s = source.getServer();

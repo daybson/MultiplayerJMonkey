@@ -1,4 +1,4 @@
-package mygame;
+package mygame.network;
 
 import mygame.messages.HelloMessage;
 import mygame.messages.MoveMessage;
@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import mygame.Globals;
+import mygame.Player;
 import mygame.messages.PlayerConnectedMessage;
 
 /**
@@ -30,7 +32,9 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
 
     //ATRIBUTOS GLOBAIS
     Server myServer;
-    List<HostedConnection> clients;
+    List<Player> clients;
+    int connectionsOLD = -1;
+    int connections = 0;
 
     public static void main(String[] args) {
         //Algumas placas de som não suportam a configuracao
@@ -46,27 +50,37 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
 
     @Override
     public void connectionAdded(Server server, HostedConnection client) {
-        //1 - adiciona cliente na lista de clientes
-        this.clients.add(client);
-
-        //2 gera um id do cliente, baseado na posição dele na lista de clientes, e devolve o ID para o client
-        HelloMessage msg = new HelloMessage(clients.size());
-        client.send(msg);
-
-        //3 - informa todos clientes para instanciarem o novo player
         Random r = new Random();
-        PlayerConnectedMessage pcm = new PlayerConnectedMessage(clients.size(),
-                ColorRGBA.randomColor(),
-                new Vector3f(r.nextInt(2), r.nextInt(2), -2));
-        for (HostedConnection c : clients) {
-            this.myServer.broadcast(pcm);
+
+        //1 - informa todos clientes para instanciarem o novo player
+        Player p = new Player(client.getId(), ColorRGBA.randomColor(), new Vector3f(r.nextInt(2), r.nextInt(2), -2));
+
+        //2 - adiciona cliente na lista de clientes
+        this.clients.add(p);
+
+        //3 - cria a mensagem de broadcast
+        //PlayerConnectedMessage pcm = new PlayerConnectedMessage(p.ClientID, p.Color, p.Pos);
+        for (int i = 0; i < clients.size(); i++) {
+            PlayerConnectedMessage current = new PlayerConnectedMessage(clients.get(i).ClientID, clients.get(i).Color, clients.get(i).Pos);
+            this.myServer.broadcast(current);
         }
     }
 
     @Override
     public void connectionRemoved(Server server, HostedConnection client) {
-        this.clients.remove(client);
-        System.out.println("Cliente #" + client.getId() + ":" + client.getAddress() + " desconectado!");
+        //Encontra id do cliente a ser removido e remove, caso encontrado
+        int index = -1;
+        for (int i = 0; i < clients.size(); i++) {
+            if (clients.get(i).ClientID == client.getId()) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index >= 0) {
+            this.clients.remove(index);
+            System.out.println("Cliente #" + client.getId() + ":" + client.getAddress() + " desconectado!");
+        }
     }
 
     @Override
@@ -86,9 +100,6 @@ public class ServerMain extends SimpleApplication implements ConnectionListener 
         myServer.addConnectionListener(this);
         myServer.addMessageListener(new ServerListener(), HelloMessage.class, ColorMessage.class, MoveMessage.class);
     }
-
-    int connectionsOLD = -1;
-    int connections = 0;
 
     @Override
     public void update() {

@@ -1,4 +1,4 @@
-package mygame;
+package mygame.network;
 
 import mygame.messages.HelloMessage;
 import mygame.messages.MoveMessage;
@@ -27,6 +27,7 @@ import com.jme3.system.AppSettings;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
 import java.util.Random;
+import mygame.Globals;
 import mygame.messages.PlayerConnectedMessage;
 
 /**
@@ -61,8 +62,14 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
     }
 
     public void adicionaJogador(String name, Vector3f loc, ColorRGBA color) {
+        if (rootNode.getChild(name) != null) {
+            System.out.println(name + " já existe");
+            return;
+        }
+
+        System.out.println("Adicionando player: " + name);
         Box b = new Box(1, 1, 1);
-        geom = new Geometry("PLAYER_" + name, b);
+        geom = new Geometry(name, b);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", color);
         geom.setMaterial(mat);
