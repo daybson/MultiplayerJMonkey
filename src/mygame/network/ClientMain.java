@@ -177,20 +177,27 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
     private final AnalogListener analogListener = new AnalogListener() {
         @Override
         public void onAnalog(String name, float value, float tpf) {
-            movMessage.setClientId(ClientID);
+            movMessage.setClientId(myClient.getId());
 
-            if (name.equals("Right")) {
-                movMessage.setPositon(value * velocidade, 0, 0);
-                myClient.send(movMessage.setReliable(false));
-            } else if (name.equals("Left")) {
-                movMessage.setPositon(-value * velocidade, 0, 0);
-                myClient.send(movMessage.setReliable(false));
-            } else if (name.equals("Up")) {
-                movMessage.setPositon(0, 0, -value * velocidade);
-                myClient.send(movMessage.setReliable(false));
-            } else if (name.equals("Down")) {
-                movMessage.setPositon(0, 0, value * velocidade);
-                myClient.send(movMessage.setReliable(false));
+            switch (name) {
+                case "Right":
+                    movMessage.setPositon(value * velocidade, 0, 0);
+                    myClient.send(movMessage.setReliable(false));
+                    break;
+                case "Left":
+                    movMessage.setPositon(-value * velocidade, 0, 0);
+                    myClient.send(movMessage.setReliable(false));
+                    break;
+                case "Up":
+                    movMessage.setPositon(0, 0, -value * velocidade);
+                    myClient.send(movMessage.setReliable(false));
+                    break;
+                case "Down":
+                    movMessage.setPositon(0, 0, value * velocidade);
+                    myClient.send(movMessage.setReliable(false));
+                    break;
+                default:
+                    break;
             }
         }
     };

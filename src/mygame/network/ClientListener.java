@@ -67,18 +67,17 @@ public class ClientListener implements MessageListener<Client> {
         } else if (message instanceof MoveMessage) {
             final MoveMessage moveMessage = (MoveMessage) message;
 
-            if (app.getRootNode().getChild("PLAYER_" + moveMessage.getClientID()) != null) {
-                System.out.println("PLAYER_" + moveMessage.getClientID() + " já existe");
-                return;
-            }
-
             app.enqueue(new Callable() {
                 @Override
                 public Void call() {
                     Spatial node = app.getRootNode().getChild("PLAYER_" + moveMessage.getClientID());
                     Vector3f v = node.getLocalTranslation();
                     node.setLocalTranslation(v.x + moveMessage.getX(), v.getY() + moveMessage.getZ(), v.z + moveMessage.getZ());
-                    app.myCam.setLocation(new Vector3f(node.getLocalTranslation().x, node.getLocalTranslation().y + 1, node.getLocalTranslation().z + 2));
+
+                    //Garante que a câmera siga apenas o player do client
+                    if (app.myClient.getId() == moveMessage.getClientID()) {
+                        app.myCam.setLocation(new Vector3f(node.getLocalTranslation().x, node.getLocalTranslation().y + 1, node.getLocalTranslation().z + 2));
+                    }
                     return null;
                 }
             });
