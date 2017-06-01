@@ -77,14 +77,17 @@ public class ClientMain extends SimpleApplication implements ClientStateListener
         }
 
         System.out.println("Adicionando player: " + name);
-        Box b = new Box(1, 1, 1);
-        geom = new Geometry(name, b);
+        //Box b = new Box(1, 1, 1);
+        ///geom = new Geometry(name, b);
+        Spatial suzane = assetManager.loadModel("Models/suzane/suzane.obj");
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", color);
-        geom.setMaterial(mat);
-        geom.setLocalTranslation(loc);
-        geom.scale(0.5f);
-        rootNode.attachChild(geom);
+        mat.setTexture("ColorMap", assetManager.loadTexture("Textures/pelagem.jpg"));
+        //mat.setColor("Color", color);
+        suzane.setLocalTranslation(loc);
+        suzane.scale(0.5f);
+        suzane.setName(name);
+        suzane.setMaterial(mat);
+        rootNode.attachChild(suzane);
     }
 
     private void adicionaCenario() {
